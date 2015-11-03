@@ -39,6 +39,16 @@ var PostModel = Backbone.Model.extend({
 	}
 })
 
+var WikiModel = Backbone.Model.extend({
+
+	parse: function(responseData){
+		return responseData.query
+	}
+
+})
+
+// https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&titles=Houston&redirects=true
+
 // ==================================================
 // =====COLLECTIONS==================================
 // ==================================================
@@ -226,13 +236,75 @@ var PostForm = React.createClass({
 
 var Test = React.createClass({
 
+	_scrubWikiLink: function(input){
+		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+		var cleanInput = cleanInput.replace('?', "")
+		var cleanInput = cleanInput.replace(" ","%20")
+		return cleanInput
+	},
+
+	_getWikiLink: function(event){
+		var $el = $(event.target);
+   	 	if ($el.is('#nreWord')) {
+	   	 	var nreText = $el[0].innerText
+	        console.log(nreText);
+	        var cleanNreText = this._scrubWikiLink(nreText)
+	        location.hash = 'wiki/' + cleanNreText
+    	}
+	},
+
+	_scanNRE: function(input){
+		var newText = input
+		var spotObjArray = nlp.spot(newText)
+		var spotTextArray = spotObjArray.map(function(el){
+			return el.text
+		})
+
+		spotTextArray.forEach(function(el){
+			var re = new RegExp(el,'g')
+			newText = newText.replace(re,"<a id='nreWord'>" + el + "</a>")			
+			// above, used id for 'nreWord' instead of class because the is() selector in _getWikiLink is picky and doesn't like use of className
+		})
+		return newText
+	
+	},
+
 	render: function(){
 		console.log(this.props.testArticles)
+		var originalArticle = this.props.testArticles.models[0].attributes.postArticle
+		var nreText = this._scanNRE(originalArticle)
 		return(
 			<div>
 				<p>Here are my posts, checkout the NRE's:</p>
 				<h2>{this.props.testArticles.models[0].attributes.postTitle}</h2>
-				<p>{this.props.testArticles.models[0].attributes.postArticle}</p>
+				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
+				</p>
+			</div>
+			)
+	}
+})
+
+// ===== VIEW: Wiki Article ====
+
+var WikiText = React.createClass({
+
+	render: function(){
+		console.log('wikiText')
+		var wikiObjectKeys = []
+		console.log(this)
+		var wikiObject = this.props.wikiText.attributes.pages
+		
+		for (var key in wikiObject) wikiObjectKeys.push(key)
+		console.log('Here are the keys')
+		console.log(wikiObjectKeys)
+		//In order to access the wiki article text, the json response requires that you know the page id. The page id is a key within the 'pages' object, which I'm calling wikiObject. So I create an array of the keys in this object (which I know only has one key, the page id) in order to find the page id. 
+		var pageId = wikiObjectKeys[0]
+		var wikiArticleText = wikiObject[pageId].extract
+
+		return(
+			<div>
+				<p>hi</p>
+				<p>{wikiArticleText}</p>
 			</div>
 			)
 	}
@@ -255,7 +327,8 @@ var WikiRouter = Backbone.Router.extend({
 		'home': 'goHomeView',
 		'post': 'goPostView',
 		'logout': 'goLogoutView',
-		'test': 'goTestView'
+		'test': 'goTestView',
+		'wiki/:cleanNreText': 'goWikiView'
 	},
 
 //--Login page:----------------------------
@@ -337,12 +410,30 @@ var WikiRouter = Backbone.Router.extend({
 		})
 	},
 
+//--Wiki sidebar:----------------------------
+
+	goWikiView: function(cleanNreText){
+		var self = this
+		this.wm.fetch({
+			url: 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles=' +cleanNreText +'&redirects=true&format=json&callback=?',
+			headers: { 'Access-Control-Allow-Origin': 'localhost:3000' },
+			dataType: 'json',
+			processData: true
+		}).then(function(results){
+			console.log(results)
+			ReactDOM.render(<WikiText wikiText={self.wm} />, document.querySelector('#containerB'))
+		})
+
+	},
+
+
 //--Initialize---------------------------------
 	
 	initialize: function(){
 		var self = this
 		this.pc = new PostCollection()
 		this.pm = new PostModel()
+		this.wm = new WikiModel()
 		location.hash = 'login'
 		Backbone.history.start()
 //-----------------------------------
