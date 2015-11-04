@@ -13,6 +13,17 @@ var $ = require('jquery'),
 console.log('hello')
 
 // ==================================================
+// =====UNMOUNTING E=================================
+// ==================================================
+// ==================================================
+
+var unmountContainerE = function(){
+		console.log('im unmounting')
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))
+}
+
+
+// ==================================================
 // =====PARSE INITIALIZE=============================
 // ==================================================
 // ==================================================
@@ -70,6 +81,22 @@ var PostCollection = Backbone.Collection.extend({
 	}
 })
 
+var WikiCollection = Backbone.Collection.extend({
+
+	url: "https://api.parse.com/1/classes/NewPost",
+
+	parseHeaders: {
+		"X-Parse-Application-Id": APP_ID,
+		"X-Parse-REST-API-Key": REST_API_KEY
+	},
+
+	model: PostModel,
+
+	parse: function(responseData){
+		return responseData.results
+	}
+})
+
 // ==================================================
 // =====VIEWS========================================
 // ==================================================
@@ -108,17 +135,17 @@ var LoginBox = React.createClass({
 
 		return(
 			<div id='loginBox'>
-				<input type='text' placeholder='Username' ref='usernameInput' autofocus></input>
-				<input type='text' placeholder='Password' ref='passwordInput' onKeyPress={this._getLoginParams}></input>
-				<button onClick={this._getLoginParamsClick}>SIGN UP</button>
+				<input type='text' id='loginUsername' placeholder='Username' ref='usernameInput' autofocus></input>
+				<input type='password' id='loginPassword' placeholder='Password' ref='passwordInput' onKeyPress={this._getLoginParams}></input>
+				<button id='signUpButton' onClick={this._getLoginParamsClick}>SIGN UP</button>
 				<div id='alreadyMember'>
-					<p>Already a member?</p>
-					<p>Signup</p>
+					<p>Already a member? <span id='loginButton'>Login</span></p>					
 				</div>
 			</div>
 		)
 	}
 })
+
 
 // ===== VIEW: Nav ====
 
@@ -140,17 +167,20 @@ var NavView = React.createClass({
 		location.hash = 'home'
 	},
 
+	_goSearchView: function(){
+
+	},
+
 	render: function(){
 
 		return(
 			<div id='navBar'>
 				<p id='articleFeed' onClick={this._goHome}>Article Feed</p>
-				<p id='bookmarks'>Bookmarks</p>
-				<input id='searchBar' type='text' placeholder='Search'></input>
 				<p id='test' onClick={this._goTest}>Test</p>
 				<p id='post' onClick={this._goPost}>Post</p>
-				<p id='menuIcon'>Menu</p>
-				<p id='logout' onClick={this._goLogout}>Logout</p>				
+				<p id='logout' onClick={this._goLogout}>Logout</p>
+				<i id='searchIcon' className="pe-7s-search"></i>			
+				<i className="pe-7s-menu"></i>
 			</div>
 			)
 	}
@@ -160,26 +190,38 @@ var NavView = React.createClass({
 
 var HomeView = React.createClass({
 
+	_displayArticles: function(articleObject){
+		return (
+			<div id='article'>
+				<p data-id={articleObject.attributes.objectId} id='articleTitle' onClick={this._goSingleArticleView}>{articleObject.attributes.postTitle}</p>				
+			</div>
+			)
+	},
+
+	_goSingleArticleView: function(event){
+		var articleClicked = event.target
+		console.log(articleClicked)
+		var articleObjectId = articleClicked.dataset.id
+		console.log(articleObjectId)
+		location.hash = "article/" + articleObjectId
+		// now add routing so that this hash directs to single article view (adaptation of test)
+	},
+
 	render: function(){
+		console.log('heres HomeView')
+		console.log(this)
+
+		var articleArray = this.props.currentArticles.models
 
 		return(
-			<p>Home</p>
+			<div id='currentArticles'>
+			{articleArray.map(this._displayArticles)} 
+			</div>
 			)
 	}
 
 })
 
-// ===== VIEW: Bookmarks ====
-
-var BookmarksView = React.createClass({
-
-	render: function(){
-
-		return(
-			<p>These are my bookmarks</p>
-			)
-	}
-})
 
 // ===== VIEW: Post article ====
 
@@ -244,6 +286,7 @@ var Test = React.createClass({
 	},
 
 	_getWikiLink: function(event){
+		console.log('clicked!')
 		var $el = $(event.target);
    	 	if ($el.is('#nreWord')) {
 	   	 	var nreText = $el[0].innerText
@@ -269,16 +312,22 @@ var Test = React.createClass({
 	
 	},
 
+	_addBookmark: function(){
+		console.log('adding bookmark')
+		console.log(this)
+		// ADD CODE HERE THAT IDENTIFIES ARTICLE TITLE, TEXT & OTHER INFO AND SAVES IT TO PARSE
+	},
+
 	render: function(){
 		console.log(this.props.testArticles)
-		var originalArticle = this.props.testArticles.models[0].attributes.postArticle
+		var originalArticle = this.props.testArticles.models[13].attributes.postArticle
 		var nreText = this._scanNRE(originalArticle)
 		return(
-			<div>
-				<p>Here are my posts, checkout the NRE's:</p>
-				<h2>{this.props.testArticles.models[0].attributes.postTitle}</h2>
+			<div id='articleText'>
+				<h2>{this.props.testArticles.models[13].attributes.postTitle}</h2>
 				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
+				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
 			</div>
 			)
 	}
@@ -302,9 +351,8 @@ var WikiText = React.createClass({
 		var wikiArticleText = wikiObject[pageId].extract
 
 		return(
-			<div>
-				<p>hi</p>
-				<p>{wikiArticleText}</p>
+			<div id='wikiArticleText'>
+				<p dangerouslySetInnerHTML={{__html: wikiArticleText}}></p>
 			</div>
 			)
 	}
@@ -360,6 +408,8 @@ var WikiRouter = Backbone.Router.extend({
 				// success
 				function(){
 					console.log(username + ' logged in!')
+					$('html').css('background','none')
+					$('html').css('background-color','#F8F7F3')
 					location.hash = "home"
 				},
 				// fail
@@ -370,21 +420,31 @@ var WikiRouter = Backbone.Router.extend({
 	},
 
 	goLoginView: function(){
-		ReactDOM.render(<LoginView sendUserInfo={this.processUserInfo} />,document.querySelector('#containerB'))
+		ReactDOM.render(<LoginView sendUserInfo={this.processUserInfo} />,document.querySelector('#containerD'))
 	},
 
 //--Home page:----------------------------
 
 	goHomeView: function(){
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerB'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
 		ReactDOM.render(<NavView />,document.querySelector('#containerA'))
-		ReactDOM.render(<HomeView />,document.querySelector('#containerB'))
+
+		var self = this
+		this.wc.fetch({
+			headers: this.wc.parseHeaders
+		}).done(function(){
+			React.render(<HomeView currentArticles = {self.wc} />, document.querySelector('#containerD')) 
+		})
 	},
 
 
 //--Post page:----------------------------
 
 	goPostView: function(){
-		ReactDOM.render(<PostView />,document.querySelector('#containerB'))
+		ReactDOM.render(<PostView />,document.querySelector('#containerD'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerB'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
 	},
 
 //--Logout page:---------------------------------
@@ -395,6 +455,10 @@ var WikiRouter = Backbone.Router.extend({
 		Parse.User.logOut()
 		console.log('and now he is logged out')
 		ReactDOM.unmountComponentAtNode(document.querySelector('#containerA'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerB'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerD'))
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))
 		this.goLoginView()
 	},
 
@@ -406,7 +470,7 @@ var WikiRouter = Backbone.Router.extend({
 			headers: this.pc.parseHeaders
 		}).done(function(results){
 			console.log(results)
-			ReactDOM.render(<Test testArticles={self.pc} />, document.querySelector('#containerB'))
+			ReactDOM.render(<Test testArticles={self.pc} />, document.querySelector('#containerB')).done(function(){ReactDOM.unmountComponentAtNode(document.querySelector('#containerD'))})
 		})
 	},
 
@@ -421,7 +485,7 @@ var WikiRouter = Backbone.Router.extend({
 			processData: true
 		}).then(function(results){
 			console.log(results)
-			ReactDOM.render(<WikiText wikiText={self.wm} />, document.querySelector('#containerB'))
+			ReactDOM.render(<WikiText wikiText={self.wm} />, document.querySelector('#containerC'))
 		})
 
 	},
@@ -434,6 +498,7 @@ var WikiRouter = Backbone.Router.extend({
 		this.pc = new PostCollection()
 		this.pm = new PostModel()
 		this.wm = new WikiModel()
+		this.wc = new WikiCollection()
 		location.hash = 'login'
 		Backbone.history.start()
 //-----------------------------------
