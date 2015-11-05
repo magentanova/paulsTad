@@ -47,6 +47,10 @@ var PostModel = Backbone.Model.extend({
 	parseHeaders: {
 		"X-Parse-Application-Id": APP_ID,
 		"X-Parse-REST-API-Key": REST_API_KEY
+	},
+
+	parse: function(responseData){
+		return responseData
 	}
 })
 
@@ -193,12 +197,12 @@ var HomeView = React.createClass({
 	_displayArticles: function(articleObject){
 		return (
 			<div id='article'>
-				<p data-id={articleObject.attributes.objectId} id='articleTitle' onClick={this._goSingleArticleView}>{articleObject.attributes.postTitle}</p>				
+				<p data-id={articleObject.attributes.objectId} id='articleTitle' onClick={this._singleArticleClick}>{articleObject.attributes.postTitle}</p>				
 			</div>
 			)
 	},
 
-	_goSingleArticleView: function(event){
+	_singleArticleClick: function(event){
 		var articleClicked = event.target
 		console.log(articleClicked)
 		var articleObjectId = articleClicked.dataset.id
@@ -241,7 +245,16 @@ var PostForm = React.createClass({
 		console.log('Clicked!')
 		var postTitle = this.refs.postTitle.getDOMNode().value
 		var postArticle = this.refs.postArticle.getDOMNode().value
-		var postImage = this.refs.postImage.getDOMNode().value
+		var postImage = $('#postImage')[0].files[0]
+		
+		var PostHeaderImage = new Parse.File('postHeaderImage.jpg',postImage)
+
+
+		console.log(PostHeaderImage)
+
+		PostHeaderImage.save().then(function(){
+
+			alert('saved!')
 
 		var NewPost = Parse.Object.extend({
 			className: 'NewPost'
@@ -252,8 +265,9 @@ var PostForm = React.createClass({
 		newPost.save({
 			postTitle: postTitle,
 			postArticle: postArticle,
-			// postImage: postImage
-		}).then(
+			postImage: PostHeaderImage
+
+		})}).then(
 			function(){
 				alert('Published!')
 			}
@@ -262,13 +276,20 @@ var PostForm = React.createClass({
 
 	render: function(){
 		return(
-			<div id='postForm'>
+			<div id='overallPost'>
+				<div id='postForm'>
 
-				<textarea rows='2' id='postTitle' placeholder='Title' ref='postTitle'></textarea>
-				<textarea rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>
-				<input type='file' id='postImage' placeholder='Add article image' ref='postImage'></input>
-				<button id='postSubmit' onClick={this._submitPostClick}>Publish</button>
+					<textarea rows='2' id='postTitle' placeholder='Title' ref='postTitle'></textarea>
+					<textarea rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>
+					<input type='file' id='postImage' placeholder='Add article image' ref='postImage'></input>
+					<button id='postSubmit' onClick={this._submitPostClick}>PUBLISH</button>
 
+				</div>
+
+				<div id='footnoteForm'>
+					<input type='text'>Add footnote</input>
+					<button>+</button>
+				</div>
 			</div>
 			)
 	}
@@ -320,11 +341,12 @@ var Test = React.createClass({
 
 	render: function(){
 		console.log(this.props.testArticles)
-		var originalArticle = this.props.testArticles.models[13].attributes.postArticle
+		var originalArticle = this.props.testArticles.models[16].attributes.postArticle
 		var nreText = this._scanNRE(originalArticle)
 		return(
 			<div id='articleText'>
-				<h2>{this.props.testArticles.models[13].attributes.postTitle}</h2>
+				<h2>{this.props.testArticles.models[16].attributes.postTitle}</h2>
+				<img id='articleHeaderImage' src={this.props.testArticles.models[16].attributes.postImage.url}></img>
 				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
 				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
@@ -376,7 +398,8 @@ var WikiRouter = Backbone.Router.extend({
 		'post': 'goPostView',
 		'logout': 'goLogoutView',
 		'test': 'goTestView',
-		'wiki/:cleanNreText': 'goWikiView'
+		'wiki/:cleanNreText': 'goWikiView',
+		'article/:articleObjectId': 'goSingleArticleView'
 	},
 
 //--Login page:----------------------------
@@ -472,6 +495,17 @@ var WikiRouter = Backbone.Router.extend({
 			console.log(results)
 			ReactDOM.render(<Test testArticles={self.pc} />, document.querySelector('#containerB')).done(function(){ReactDOM.unmountComponentAtNode(document.querySelector('#containerD'))})
 		})
+	},
+
+//--Single article view:----------------------------
+	goSingleArticleView: function(articleObjectId){
+		console.log('running single article view in router')
+		console.log(articleObjectId)
+		var self = this
+		this.pm.fetch({
+			headers: this.pm.parseHeaders,
+			query: articleObjectId
+		}).then(function(results){console.log(results)})
 	},
 
 //--Wiki sidebar:----------------------------

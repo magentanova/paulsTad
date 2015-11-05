@@ -185,6 +185,10 @@ html{
     background: #F3F2F2;
 }
 
+#signUpButton:focus{
+    outline: 0;
+}
+
 #alreadyMember{
     margin-top: 25px;
     font-size: 15px;
@@ -193,6 +197,10 @@ html{
 
 #loginButton{
     font-weight: bold;
+}
+
+#loginButton:focus{
+    outline: 0;
 }
 
 //-------NAV-VIEW------------------------
@@ -218,6 +226,10 @@ html{
     margin-right: 20px;
 }
 
+#articleFeed:hover{
+    cursor: pointer;
+}
+
 #bookmarks{
     display: inline;
     margin-right: 20px;
@@ -228,9 +240,17 @@ html{
     margin-right: 20px;
 }
 
+#test:hover{
+    cursor: pointer;
+}
+
 #post{
     display: inline;
     margin-right: 20px;
+}
+
+#post:hover{
+    cursor: pointer;
 }
 
 #menuIcon{
@@ -247,6 +267,10 @@ html{
     margin-right: 20px;
 }
 
+#logout:hover{
+    cursor: pointer;
+}
+
 
 
 //-------POST VIEW------------------------
@@ -261,12 +285,12 @@ html{
     font-family: Roboto,sans-serif;
     display: block;
     width: 700px;
-    height: 85px;
+    height: 100px;
     outline: 0;
     border: 0;
     font-size: 24px;
     margin-bottom: 4px;
-    line-height: 20px;
+    line-height: 30px;
     padding: 20px;
     padding-left: 20px;
     resize: none;
@@ -287,6 +311,25 @@ html{
 
 #postImage{
     background-color: white;
+}
+
+#footnoteForm{
+    margin-left: 350px;
+}
+
+#postSubmit{
+background: white;
+    border: 0;
+    width: 320px;
+    height: 40px;
+    font-family: 'Roboto';
+    letter-spacing: 3px;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+#postSubmit:hover{
+    background: #F3F2F2;
 }
 
 
@@ -335,9 +378,9 @@ nreWord{
 #wikiArticleText{
 
     background-color: white;
+    height: 100vh;
     padding: 40px;
     font-size: 16px;
-    max-height: 748px;
     overflow: scroll;
 
     h2{
