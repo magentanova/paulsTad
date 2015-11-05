@@ -12,6 +12,8 @@ var $ = require('jquery'),
 
 console.log('hello')
 
+// enables rich-text editor
+
 // ==================================================
 // =====UNMOUNTING E=================================
 // ==================================================
@@ -274,6 +276,26 @@ var PostForm = React.createClass({
 		)
 	},
 
+	_addFootnote: function(event){
+	    var sel, range;
+		var newFootnote = this.refs.newFootnote.getDOMNode().value
+
+	    if (window.getSelection) {
+	        sel = window.getSelection();
+	        var activeElement = document.activeElement;
+	        if (activeElement.nodeName == "TEXTAREA" ||
+	           (activeElement.nodeName == "INPUT" && activeElement.type.toLowerCase() == "text")) {
+	               var val = activeElement.value, 
+	           		   start = activeElement.selectionStart, 
+	           		   end = activeElement.selectionEnd;
+	               activeElement.value = val.slice(0, start) + "<span id='footnote' data-txt='" + newFootnote +"'>" + sel + "</span>" + val.slice(end);	
+	               document.execCommand("CreateLink", false, "http://stackoverflow.com/");
+               
+	        } 
+	    }
+
+	},
+
 	render: function(){
 		return(
 			<div id='overallPost'>
@@ -287,13 +309,75 @@ var PostForm = React.createClass({
 				</div>
 
 				<div id='footnoteForm'>
-					<input type='text'>Add footnote</input>
-					<button>+</button>
+					<input ref='newFootnote' type='text'>Add footnote</input>
+					<button onMouseDown={this._addFootnote}>+</button>
 				</div>
 			</div>
 			)
 	}
 })
+
+// ===== VIEW: Single Article ====
+
+var SingleArticleView = React.createClass({
+
+	_scrubWikiLink: function(input){
+		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+		var cleanInput = cleanInput.replace('?', "")
+		var cleanInput = cleanInput.replace(" ","%20")
+		return cleanInput
+	},
+
+	_getWikiLink: function(event){
+		console.log('clicked!')
+		var $el = $(event.target);
+   	 	if ($el.is('#nreWord')) {
+	   	 	var nreText = $el[0].innerText
+	        console.log(nreText);
+	        var cleanNreText = this._scrubWikiLink(nreText)
+	        location.hash = 'wiki/' + cleanNreText
+    	}
+	},
+
+	_scanNRE: function(input){
+		var newText = input
+		var spotObjArray = nlp.spot(newText)
+		var spotTextArray = spotObjArray.map(function(el){
+			return el.text
+		})
+
+		spotTextArray.forEach(function(el){
+			var re = new RegExp(el,'g')
+			newText = newText.replace(re,"<a id='nreWord'>" + el + "</a>")			
+			// above, used id for 'nreWord' instead of class because the is() selector in _getWikiLink is picky and doesn't like use of className
+		})
+		return newText
+	
+	},
+
+	_addBookmark: function(){
+		console.log('adding bookmark')
+		console.log(this)
+		// ADD CODE HERE THAT IDENTIFIES ARTICLE TITLE, TEXT & OTHER INFO AND SAVES IT TO PARSE
+	},
+		
+	render: function(){
+
+		var originalArticle = this.props.article.postArticle
+		var nreText = this._scanNRE(originalArticle)
+		
+		return(
+			<div id='articleText'>
+				<h2>{this.props.article.postTitle}</h2>
+				<img id='articleHeaderImage' src={this.props.article.postImage.url}></img>
+				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
+				</p>
+				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
+			</div>
+			)
+	}
+})
+
 
 // ===== VIEW: Test ====
 
@@ -341,12 +425,12 @@ var Test = React.createClass({
 
 	render: function(){
 		console.log(this.props.testArticles)
-		var originalArticle = this.props.testArticles.models[16].attributes.postArticle
+		var originalArticle = this.props.testArticles.models[21].attributes.postArticle
 		var nreText = this._scanNRE(originalArticle)
 		return(
 			<div id='articleText'>
-				<h2>{this.props.testArticles.models[16].attributes.postTitle}</h2>
-				<img id='articleHeaderImage' src={this.props.testArticles.models[16].attributes.postImage.url}></img>
+				<h2>{this.props.testArticles.models[21].attributes.postTitle}</h2>
+				<img id='articleHeaderImage' src={this.props.testArticles.models[21].attributes.postImage.url}></img>
 				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
 				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
@@ -505,7 +589,20 @@ var WikiRouter = Backbone.Router.extend({
 		this.pm.fetch({
 			headers: this.pm.parseHeaders,
 			query: articleObjectId
-		}).then(function(results){console.log(results)})
+		}).then(function(results){
+			var articleObjArray = results.results
+			console.log(articleObjArray)
+			articleObjArray.forEach(function(obj){
+				if(obj['objectId']===articleObjectId){
+					console.log('found article')
+					console.log(obj)
+					var articleClicked = obj
+					ReactDOM.render(<SingleArticleView article={articleClicked} />, document.querySelector('#containerB'))
+					ReactDOM.unmountComponentAtNode(document.querySelector('#containerD'))
+				}
+				
+			})
+		})
 	},
 
 //--Wiki sidebar:----------------------------
@@ -519,6 +616,7 @@ var WikiRouter = Backbone.Router.extend({
 			processData: true
 		}).then(function(results){
 			console.log(results)
+			ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
 			ReactDOM.render(<WikiText wikiText={self.wm} />, document.querySelector('#containerC'))
 		})
 
