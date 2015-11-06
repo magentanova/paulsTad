@@ -12,7 +12,37 @@ var $ = require('jquery'),
 
 console.log('hello')
 
-// enables rich-text editor
+// RELATIVE TIME
+
+function relativeTime(date_str) {
+	    if (!date_str) {return;}
+	    date_str = $.trim(date_str);
+	    date_str = date_str.replace(/\.\d\d\d+/,""); // remove the milliseconds
+	    date_str = date_str.replace(/-/,"/").replace(/-/,"/"); //substitute - with /
+	    date_str = date_str.replace(/T/," ").replace(/Z/," UTC"); //remove T and substitute Z with UTC
+	    date_str = date_str.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // +08:00 -> +0800
+	    var parsed_date = new Date(date_str);
+	    var relative_to = (arguments.length > 1) ? arguments[1] : new Date(); //defines relative to what ..default is now
+	    var delta = parseInt((relative_to.getTime()-parsed_date)/1000);
+	    delta=(delta<2)?2:delta;
+	    var r = '';
+	    if (delta < 60) {
+	    r = delta + ' seconds ago';
+	    } else if(delta < 120) {
+	    r = 'a minute ago';
+	    } else if(delta < (45*60)) {
+	    r = (parseInt(delta / 60, 10)).toString() + ' minutes ago';
+	    } else if(delta < (2*60*60)) {
+	    r = 'an hour ago';
+	    } else if(delta < (24*60*60)) {
+	    r = '' + (parseInt(delta / 3600, 10)).toString() + ' hours ago';
+	    } else if(delta < (48*60*60)) {
+	    r = 'a day ago';
+	    } else {
+	    r = (parseInt(delta / 86400, 10)).toString() + ' days ago';
+	    }
+	    return r;
+	};
 
 // ==================================================
 // =====UNMOUNTING E=================================
@@ -196,7 +226,8 @@ var HomeView = React.createClass({
 			<div id='homeArticleBox'>
 				<img data-id={articleObject.attributes.objectId} id='homeArticleImage' src={articleObject.attributes.postImage.url} onClick={this._singleArticleClick}/>
 				<p data-id={articleObject.attributes.objectId} id='homeArticleTitle' onClick={this._singleArticleClick}>{articleObject.attributes.postTitle}</p>
-				<p id='homeArticleDate'>Posted {articleObject.attributes.createdAt}</p>
+				<p id='homeArticleAuthor'>By AUTHOR</p>
+				<p className='timeago' id='homeArticleDate'>Posted {relativeTime(articleObject.attributes.createdAt)} </p>
 
 			</div>
 			)
@@ -370,10 +401,14 @@ var SingleArticleView = React.createClass({
 		var nreText = this._scanNRE(originalArticle)
 		
 		return(
-			<div id='articleText'>
-				<h2>{this.props.article.postTitle}</h2>
+			<div id='articleBox'>
+				<div id='articleHeader'>
+					<h2>{this.props.article.postTitle}</h2>
+					<p id='articleInfo'>By Author, {relativeTime(this.props.article.createdAt)}</p>					
+				</div>
+
 				<img id='articleHeaderImage' src={this.props.article.postImage.url}></img>
-				<p onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
+				<p id='articleText' onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
 				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
 			</div>

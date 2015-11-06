@@ -138,7 +138,7 @@ html{
     width: 100%;
     position: fixed;
     top: 65px;
-    background-color: lightblue;
+    background-color: #F3F0E6;
     opacity: 0.8
 }
 
@@ -283,15 +283,20 @@ html{
 //-------HOME VIEW------------------------
 
 #featuredArticles{
-    width: 90%;
+    width: 100%;
     height: 400px;
-    background-color: #D5ECFF;
+    background-color: #F3F0E6;
     margin: auto;
     margin-bottom: 45px;
     padding: 32px;
-    color: #FF3F00;
+    color: #727272;
     font-size: 80px;
     line-height: 72px;
+    margin-top: 10px;
+
+    p{
+        margin-left: 30px;
+    }
 }
 
 #currentArticles{
@@ -324,6 +329,13 @@ html{
 
 #homeArticleImage:hover{
     cursor: pointer;
+}
+
+#homeArticleAuthor{
+    font-family: Helvetica,sans-serif;
+    font-size: 12px;
+    text-indent: 0;
+    font-weight: bold;
 }
 
 #homeArticleDate{
@@ -410,17 +422,41 @@ a{
     cursor: pointer;  
 }
 
-#articleText{
+#articleHeader{
+    border-top: 5px solid black;
+    padding-top: 28px;
+    border-bottom: 1px solid lightgray;
+    margin-top: 85px;
+    margin-bottom: 50px;
+}
+
+#articleBox{
 
     height: 100vh;
     overflow: scroll;
     padding-left: 75px;
     padding-right: 44px;
+    margin-left: 3rem;
 
     h2{
-        margin-top: 85px;
         font-family: 'Helvetica', sans-serif;
-        font-size: 32px;
+        font-weight: bolder;
+        font-size: 32px;        
+        padding-bottom: 25px;
+        margin-bottom: 0;
+    }
+
+    #articleInfo{
+        text-indent: 0;
+        font-family: 'Helvetica', sans-serif;
+        font-size: 15px;
+        line-height: 15px;
+        font-weight: lighter;
+        margin-bottom: 15px;
+    }
+
+    #articleText{
+        margin-top: 30px;
     }
 
     p{
@@ -428,6 +464,9 @@ a{
     }
 }
 
+#articleHeaderImage{
+    max-height: 450px;
+}
 
 
 nreWord{
