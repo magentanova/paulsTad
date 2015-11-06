@@ -165,10 +165,6 @@ var NavView = React.createClass({
 		location.hash = 'post'
 	},
 
-	_goTest: function(){
-		location.hash = 'test'
-	},
-
 	_goHome: function(){
 		location.hash = 'home'
 	},
@@ -182,7 +178,6 @@ var NavView = React.createClass({
 		return(
 			<div id='navBar'>
 				<p id='articleFeed' onClick={this._goHome}>Article Feed</p>
-				<p id='test' onClick={this._goTest}>Test</p>
 				<p id='post' onClick={this._goPost}>Post</p>
 				<p id='logout' onClick={this._goLogout}>Logout</p>
 				<i id='searchIcon' className="pe-7s-search"></i>			
@@ -198,8 +193,11 @@ var HomeView = React.createClass({
 
 	_displayArticles: function(articleObject){
 		return (
-			<div id='article'>
-				<p data-id={articleObject.attributes.objectId} id='articleTitle' onClick={this._singleArticleClick}>{articleObject.attributes.postTitle}</p>				
+			<div id='homeArticleBox'>
+				<img data-id={articleObject.attributes.objectId} id='homeArticleImage' src={articleObject.attributes.postImage.url} onClick={this._singleArticleClick}/>
+				<p data-id={articleObject.attributes.objectId} id='homeArticleTitle' onClick={this._singleArticleClick}>{articleObject.attributes.postTitle}</p>
+				<p id='homeArticleDate'>Posted {articleObject.attributes.createdAt}</p>
+
 			</div>
 			)
 	},
@@ -220,8 +218,13 @@ var HomeView = React.createClass({
 		var articleArray = this.props.currentArticles.models
 
 		return(
-			<div id='currentArticles'>
-			{articleArray.map(this._displayArticles)} 
+			<div>
+				<div id='featuredArticles'>
+					<p>Featured<br />Articles</p>
+				</div>
+				<div id='currentArticles'>
+				{articleArray.map(this._displayArticles)} 
+				</div>
 			</div>
 			)
 	}
@@ -443,6 +446,10 @@ var Test = React.createClass({
 
 var WikiText = React.createClass({
 
+	_closeWikiBox: function(event){
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
+	},
+
 	render: function(){
 		console.log('wikiText')
 		var wikiObjectKeys = []
@@ -458,7 +465,12 @@ var WikiText = React.createClass({
 
 		return(
 			<div id='wikiArticleText'>
-				<p dangerouslySetInnerHTML={{__html: wikiArticleText}}></p>
+				<div id='wikiBoxHeader'>
+					<i id='closeX' className="pe-7s-close" onClick={this._closeWikiBox}></i>
+				</div>
+				<div id='actualArticleText'>
+					<p dangerouslySetInnerHTML={{__html: wikiArticleText}}></p>
+				</div>
 			</div>
 			)
 	}
@@ -516,7 +528,7 @@ var WikiRouter = Backbone.Router.extend({
 				function(){
 					console.log(username + ' logged in!')
 					$('html').css('background','none')
-					$('html').css('background-color','#F8F7F3')
+					$('html').css('background-color','#ffffff')
 					location.hash = "home"
 				},
 				// fail
