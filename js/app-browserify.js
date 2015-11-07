@@ -252,6 +252,7 @@ var HomeView = React.createClass({
 			<div>
 				<div id='featuredArticles'>
 					<p>Featured<br />Articles</p>
+					<p id='goHere'>Will go here</p>
 				</div>
 				<div id='currentArticles'>
 				{articleArray.map(this._displayArticles)} 
@@ -330,22 +331,22 @@ var PostForm = React.createClass({
 
 	},
 
+	
+
 	render: function(){
 		return(
-			<div id='overallPost'>
+			
+			<div id='overallPost'>				
+
 				<div id='postForm'>
 
 					<textarea rows='2' id='postTitle' placeholder='Title' ref='postTitle'></textarea>
-					<textarea rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>
+					<textarea rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>	
 					<input type='file' id='postImage' placeholder='Add article image' ref='postImage'></input>
 					<button id='postSubmit' onClick={this._submitPostClick}>PUBLISH</button>
 
 				</div>
-
-				<div id='footnoteForm'>
-					<input ref='newFootnote' type='text'>Add footnote</input>
-					<button onMouseDown={this._addFootnote}>+</button>
-				</div>
+				
 			</div>
 			)
 	}
@@ -499,7 +500,7 @@ var WikiText = React.createClass({
 		var wikiArticleText = wikiObject[pageId].extract
 
 		return(
-			<div id='wikiArticleText'>
+			<div id='wikiArticleText' className='animated fadeIn'>
 				<div id='wikiBoxHeader'>
 					<i id='closeX' className="pe-7s-close" onClick={this._closeWikiBox}></i>
 				</div>

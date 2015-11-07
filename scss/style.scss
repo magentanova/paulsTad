@@ -108,7 +108,8 @@ html{
     z-index: 1; 
     border-bottom: 1px solid $myGray;
     padding-top: 15px;  
-    z-index: 2;     
+    z-index: 2;
+    box-shadow: 0 0 25px rgba(0,0,0,0.35);
 }
 
 #containerB{
@@ -186,7 +187,7 @@ html{
     height: 40px;
     font-family: 'Helvetica';
     letter-spacing: 3px;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 300;
 }
 
@@ -297,6 +298,13 @@ html{
     p{
         margin-left: 30px;
     }
+
+    #goHere{
+        font-family: 'Helvetica';
+        font-weight: lighter;
+        text-align: center;
+        font-size: 15px;
+    }
 }
 
 #currentArticles{
@@ -312,6 +320,7 @@ html{
     margin-right: 70px;
     margin-bottom: 40px;
     border-bottom: 1px solid $newGray;
+
 
 }
 
@@ -354,13 +363,14 @@ html{
 #postForm{
     margin-left: 350px;
     margin-top: 100px;
+    max-width: 700px;
 
 }
 
 #postTitle{
     font-family: Helvetica,sans-serif;
     display: block;
-    width: 700px;
+    width: 100%;
     height: 100px;
     outline: 0;
     border: 1px solid $myGray;
@@ -375,8 +385,9 @@ html{
 
 #postArticle{
     font-family: 'Caslon 540';
+    margin-bottom: 15px;
     display: block;      
-    width: 700px;
+    width: 100%;
     min-height: 400px;
     outline: 0;
     border: 1px solid $myGray;
@@ -389,9 +400,6 @@ html{
     background-color: white;
 }
 
-#footnoteForm{
-    margin-left: 350px;
-}
 
 #footnote{
     color: blue;
@@ -399,9 +407,10 @@ html{
 }
 
 #postSubmit{
-    background: #F3F2F2;
+    float: right;
+    background: #F9F6F6;
     border: 0;
-    width: 320px;
+    width: 230px;
     height: 40px;
     font-family: 'Helvetica';
     letter-spacing: 3px;
@@ -411,6 +420,28 @@ html{
 
 #postSubmit:hover{
     background: #EDEDED;
+}
+
+#addFootnoteButton{
+    background: #f9f6f6;
+    border: 0;
+    font-family: Helvetica;
+    font-weight: lighter;
+    height: 30px;
+    width: 30px;
+    font-size: 16px;
+    line-height: 16px;
+    padding-bottom: 5px;
+}
+
+#addFootnoteButton:hover{
+    background: #EDEDED;
+}
+
+#footnoteInput{
+    width: 60%;
+    margin-right: 10px;
+    margin-bottom: 15px;
 }
 
 
@@ -437,6 +468,8 @@ a{
     padding-left: 75px;
     padding-right: 44px;
     margin-left: 3rem;
+    border-right: 1px solid #C8C9CB;
+
 
     h2{
         font-family: 'Helvetica', sans-serif;
@@ -476,6 +509,7 @@ nreWord{
 #bookmarkButton{
     border: 1px solid $myGray;
     padding: 4px;
+    margin-bottom: 50px;
 }
 
 #bookmarkButton:hover{
@@ -491,6 +525,7 @@ nreWord{
 }
 
 #closeX{
+    color: #8BC7EB;
     font-size: 45px;
     position: fixed;
     background-color: white;
@@ -511,7 +546,6 @@ nreWord{
     padding: 40px;
     font-size: 16px;
     overflow: scroll;
-    border-left: 1px solid #C8C9CB;
     border-bottom: 1px solid #c8c9cb;
 
     h2{
