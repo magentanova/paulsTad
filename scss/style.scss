@@ -77,6 +77,7 @@ $myOtherMain: #FAF9F6;
 $myOtherOtherMain: #F8F7F3;
 $myGray: #c8c9cb; 
 $newGray: #d9d9d9;
+$myGold: #FFE200;
 
 *{
     margin: 0;
@@ -454,7 +455,7 @@ a{
 }
 
 #articleHeader{
-    border-top: 5px solid black;
+    border-top: 2px solid black;
     padding-top: 28px;
     border-bottom: 1px solid lightgray;
     margin-top: 85px;
@@ -472,7 +473,7 @@ a{
 
 
     h2{
-        font-family: 'Helvetica', sans-serif;
+        font-family: 'Caslon 540', serif;
         font-weight: bolder;
         font-size: 32px;        
         padding-bottom: 25px;
@@ -490,6 +491,8 @@ a{
 
     #articleText{
         margin-top: 30px;
+        border-bottom: 1px solid #C8C9CB;
+        padding-bottom: 45px;
     }
 
     p{
@@ -506,14 +509,25 @@ nreWord{
 
 }
 
-#bookmarkButton{
-    border: 1px solid $myGray;
+#bookmarkDiv{
     padding: 4px;
     margin-bottom: 50px;
+    background-color: $myGold;
+    border-radius: 8px;
+    width: 160px;
+    font-family: 'Helvetica', sans-serif;
+    font-weight: lighter;
+    font-size: 12px;
+
+    p{
+        display: inline;
+        font-size: 14px;
+    }
 }
 
-#bookmarkButton:hover{
+#bookmarkDiv:hover{
     cursor: pointer;
+    background-color: #FEED6C;
 }
 
 

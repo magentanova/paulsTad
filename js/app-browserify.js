@@ -69,6 +69,14 @@ var APP_ID = 'SU8TpFl5xTFmygyvC7Bg9kSLwqy3VYDdtblWDorM',
 Parse.initialize(APP_ID,JS_KEY)
 
 // ==================================================
+// =====GETTY IMAGES API=============================
+// ==================================================
+// ==================================================
+
+var gettyApiKey = 'khexpaeqvskvstpetvgtss4t'
+var gettySecret = 'v228etYpy3uvYUJCBWBsWkRU4JEk4BmX25X65DCFhMfgq'
+
+// ==================================================
 // =====MODELS=======================================
 // ==================================================
 // ==================================================
@@ -92,6 +100,13 @@ var WikiModel = Backbone.Model.extend({
 		return responseData.query
 	}
 
+})
+
+var GettyModel = Backbone.Model.extend({
+
+	parse: function(responseData){
+		return responseData
+	}
 })
 
 // https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&titles=Houston&redirects=true
@@ -411,7 +426,9 @@ var SingleArticleView = React.createClass({
 				<img id='articleHeaderImage' src={this.props.article.postImage.url}></img>
 				<p id='articleText' onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
-				<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i>
+				<div id='bookmarkDiv'>
+					<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i><p>Bookmark</p>
+				</div>
 			</div>
 			)
 	}
@@ -486,6 +503,11 @@ var WikiText = React.createClass({
 		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
 	},
 
+	_goImages: function(){
+		var wikiSearchTerm;
+		location.hash = 'images/'+ wikiSearchTerm
+	},
+
 	render: function(){
 		console.log('wikiText')
 		var wikiObjectKeys = []
@@ -498,11 +520,12 @@ var WikiText = React.createClass({
 		//In order to access the wiki article text, the json response requires that you know the page id. The page id is a key within the 'pages' object, which I'm calling wikiObject. So I create an array of the keys in this object (which I know only has one key, the page id) in order to find the page id. 
 		var pageId = wikiObjectKeys[0]
 		var wikiArticleText = wikiObject[pageId].extract
+		var wikiSearchTerm = wikiObject[pageId].title
 
 		return(
 			<div id='wikiArticleText' className='animated fadeIn'>
 				<div id='wikiBoxHeader'>
-					<i id='closeX' className="pe-7s-close" onClick={this._closeWikiBox}></i>
+					<i id='closeX' className="pe-7s-close" onClick={this._closeWikiBox}></i><p onClick={function(){location.hash='images/'+wikiSearchTerm}}>Images</p>
 				</div>
 				<div id='actualArticleText'>
 					<p dangerouslySetInnerHTML={{__html: wikiArticleText}}></p>
@@ -531,7 +554,8 @@ var WikiRouter = Backbone.Router.extend({
 		'logout': 'goLogoutView',
 		'test': 'goTestView',
 		'wiki/:cleanNreText': 'goWikiView',
-		'article/:articleObjectId': 'goSingleArticleView'
+		'article/:articleObjectId': 'goSingleArticleView',
+		'images/:gettySearchTerm': 'goImageView'
 	},
 
 //--Login page:----------------------------
@@ -670,6 +694,22 @@ var WikiRouter = Backbone.Router.extend({
 
 	},
 
+//--Image sidebar:----------------------------
+
+	goImageView: function(gettySearchTerm){
+		var self = this
+		this.gm.fetch({
+			url: 'https://api.gettyimages.com/v3/search/images?embed_content_only=true&fields=id,title,thumb,referral_destinations&sort_order=best&phrase='+gettySearchTerm,
+			headers: {
+				'Api-Key': gettyApiKey,
+				'ImageFamily': 'Editorial'
+			},
+			dataType: 'json',
+			processData: true
+		}).then(function(results){
+			console.log(results)
+		})
+	},
 
 //--Initialize---------------------------------
 	
@@ -679,6 +719,7 @@ var WikiRouter = Backbone.Router.extend({
 		this.pm = new PostModel()
 		this.wm = new WikiModel()
 		this.wc = new WikiCollection()
+		this.gm = new GettyModel()
 		location.hash = 'login'
 		Backbone.history.start()
 //-----------------------------------
