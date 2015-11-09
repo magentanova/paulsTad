@@ -9,8 +9,10 @@ var $ = require('jquery'),
 	Parse = require('parse'),
 	ReactDOM = require('react-dom')
 
+var P = window.Parse
 
 console.log('hello')
+
 
 // RELATIVE TIME
 
@@ -218,11 +220,26 @@ var NavView = React.createClass({
 
 	},
 
+	_goBookmarks: function(){
+		location.hash = 'bookmarks'
+	},
+
+	_goBookmarkPreview: function(){
+		console.log('im hovering')
+		$('#currentArticles').css('-webkit-filter','blur(3px)')
+		$('#featuredArticles').css('-webkit-filter','blur(3px)')
+		$('#articleBox').css('-webkit-filter','blur(3px)')
+		$('#wikiArticleText').css('-webkit-filter','blur(3px)')	
+
+		ReactDOM.render(<BookmarkPreview  />,document.querySelector('#containerE'))
+	},
+
 	render: function(){
 
 		return(
 			<div id='navBar'>
 				<p id='articleFeed' onClick={this._goHome}>Article Feed</p>
+				<p id='bookmarks' onMouseOver={this._goBookmarkPreview}onClick={this._goBookmarks}>Bookmarks</p>
 				<p id='post' onClick={this._goPost}>Post</p>
 				<p id='logout' onClick={this._goLogout}>Logout</p>
 				<i id='searchIcon' className="pe-7s-search"></i>			
@@ -231,6 +248,29 @@ var NavView = React.createClass({
 			)
 	}
 })
+
+// ===== VIEW: Bookmark Preview ====
+
+var BookmarkPreview = React.createClass({
+
+	_closeBookmarkPreview: function(){
+		$('#currentArticles').css('-webkit-filter','blur(0px)')
+		$('#featuredArticles').css('-webkit-filter','blur(0px)')
+		$('#articleBox').css('-webkit-filter','blur(0px)')
+		$('#wikiArticleText').css('-webkit-filter','blur(0px)')	
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))
+	},
+
+	render: function(){
+		return(
+			<div id='bookmarkPreview' className='animated fadeIn' onMouseLeave={this._closeBookmarkPreview}>
+				<p id='bookmarksTitle'>My<br></br>Bookmarks</p>
+			</div>
+			)
+	}
+
+})
+
 
 // ===== VIEW: Home ====
 
@@ -427,7 +467,9 @@ var SingleArticleView = React.createClass({
 				<p id='articleText' onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
 				<div id='bookmarkDiv'>
-					<i id='bookmarkButton' className="material-icons" onClick={this._addBookmark}>bookmark_border</i><p>Bookmark</p>
+					<p>+ Bookmark</p>
+				</div>
+				<div id='articleFooter'>
 				</div>
 			</div>
 			)
@@ -505,6 +547,7 @@ var WikiText = React.createClass({
 
 	_goImages: function(){
 		var wikiSearchTerm;
+		$('#gettyIcon').css('color','black')
 		location.hash = 'images/'+ wikiSearchTerm
 	},
 
@@ -525,7 +568,11 @@ var WikiText = React.createClass({
 		return(
 			<div id='wikiArticleText' className='animated fadeIn'>
 				<div id='wikiBoxHeader'>
-					<i id='closeX' className="pe-7s-close" onClick={this._closeWikiBox}></i><p onClick={function(){location.hash='images/'+wikiSearchTerm}}>Images</p>
+					<div id='closeX' >
+						<img id='blueX' src='./images/blueX.png' onClick={this._closeWikiBox}></img>
+						<p id='wikiIcon'>Wikipedia</p>
+						<p id='gettyIcon' onClick={function(){location.hash='images/'+wikiSearchTerm}}>Images</p>
+					</div>
 				</div>
 				<div id='actualArticleText'>
 					<p dangerouslySetInnerHTML={{__html: wikiArticleText}}></p>
@@ -534,6 +581,71 @@ var WikiText = React.createClass({
 			)
 	}
 })
+
+var GettyWindow = React.createClass({
+
+	_closeWikiBox: function(event){
+		ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
+	},
+
+	_displayImages: function(element){
+		var returnValue = '<img src=' + element.display_sizes[0].uri + '/>'
+		var gettyLink = element.referral_destinations[0].uri
+		console.log(returnValue)
+		return (
+			<div id='gettyResult'>
+				<a href={gettyLink} target="_blank"><img id='gettyImageSingle' src={element.display_sizes[0].uri} /></a>
+			</div>
+			)						
+		
+	},
+
+	_displayGoogleImages: function(element){
+		var returnValue = '<img src=' + element.unescapedUrl + '/>'
+		return(
+			<div id='gettyResult'>
+				<a href={element.originalContextUrl}><img id='gettyImageSingle' src={element.unescapedUrl} /></a>
+			</div>
+			)
+	},
+
+	render: function(){
+		console.log(this)
+		var imageArray = this.props.imageArray
+		var wikiSearchTerm = location.hash.slice(8)
+
+		// return(
+		// 	<div id='wikiArticleText' className='animated fadeIn'>
+		// 		<div id='wikiBoxHeader'>
+		// 			<div id='closeX' >
+		// 				<img id='blueX' src='./images/blueX.png' onClick={this._closeWikiBox}></img>
+		// 				<p id='wikiIcon' style={{color:'#C8C9CB'}} onClick={function(){location.hash='wiki/'+wikiSearchTerm}}>Wikipedia</p>
+		// 				<p id='gettyIcon' style={{color:'black'}} >Images</p>
+		// 			</div>
+		// 		</div>
+		// 		<div id='gettyImageList'>
+		// 			{imageArray.map(this._displayImages)}
+		// 		</div>
+		// 	</div>
+		// 	)
+		// 	
+		return(
+			<div id='wikiArticleText' className='animated fadeIn'>
+				<div id='wikiBoxHeader'>
+					<div id='closeX' >
+						<img id='blueX' src='./images/blueX.png' onClick={this._closeWikiBox}></img>
+						<p id='wikiIcon' style={{color:'#C8C9CB'}} onClick={function(){location.hash='wiki/'+wikiSearchTerm}}>Wikipedia</p>
+						<p id='gettyIcon' style={{color:'black'}} >Images</p>
+					</div>
+				</div>
+				<div id='googleImageList'>
+					{imageArray.map(this._displayGoogleImages)}
+				</div>
+			</div>
+			)
+	}
+})
+
 
 // ==================================================
 // =====ROUTING======================================
@@ -699,15 +811,20 @@ var WikiRouter = Backbone.Router.extend({
 	goImageView: function(gettySearchTerm){
 		var self = this
 		this.gm.fetch({
-			url: 'https://api.gettyimages.com/v3/search/images?embed_content_only=true&fields=id,title,thumb,referral_destinations&sort_order=best&phrase='+gettySearchTerm,
-			headers: {
-				'Api-Key': gettyApiKey,
-				'ImageFamily': 'Editorial'
-			},
-			dataType: 'json',
+			// url: 'https://api.gettyimages.com/v3/search/images?embed_content_only=true&fields=id,title,thumb,referral_destinations&sort_order=best&phrase='+gettySearchTerm,
+			// headers: {
+			// 	'Api-Key': gettyApiKey,
+			// 	'ImageFamily': 'Editorial'
+			// },
+			// dataType: 'json',
+			// processData: true
+			url: 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + gettySearchTerm,
+			dataType: 'jsonp',
 			processData: true
 		}).then(function(results){
 			console.log(results)
+			ReactDOM.render(<GettyWindow imageArray={results.responseData.results} />, document.querySelector('#containerC'))
+
 		})
 	},
 
