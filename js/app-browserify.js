@@ -229,9 +229,19 @@ var NavView = React.createClass({
 		$('#currentArticles').css('-webkit-filter','blur(3px)')
 		$('#featuredArticles').css('-webkit-filter','blur(3px)')
 		$('#articleBox').css('-webkit-filter','blur(3px)')
-		$('#wikiArticleText').css('-webkit-filter','blur(3px)')	
+		$('#wikiArticleText').css('-webkit-filter','blur(3px)')
 
-		ReactDOM.render(<BookmarkPreview  />,document.querySelector('#containerE'))
+		var currentUserId = Parse.User.current().id
+
+		var favArray = Parse.User.current().get('userBookmarks')
+		console.log('new fav array')
+		console.log(favArray)
+
+		
+      	
+   		ReactDOM.render(<BookmarkPreview  />,document.querySelector('#containerE'))
+
+		
 	},
 
 	render: function(){
@@ -412,7 +422,7 @@ var PostForm = React.createClass({
 var SingleArticleView = React.createClass({
 
 	_scrubWikiLink: function(input){
-		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_~()]/g,"")
 		var cleanInput = cleanInput.replace('?', "")
 		var cleanInput = cleanInput.replace(" ","%20")
 		return cleanInput
@@ -448,7 +458,32 @@ var SingleArticleView = React.createClass({
 	_addBookmark: function(){
 		console.log('adding bookmark')
 		console.log(this)
-		// ADD CODE HERE THAT IDENTIFIES ARTICLE TITLE, TEXT & OTHER INFO AND SAVES IT TO PARSE
+
+		var articleId = location.hash.slice(9)
+		var articleIdArray = '['+articleId+']'
+		// var articleString = '['+articleId+']'
+		var currentUserId = Parse.User.current().id
+		console.log(articleId)
+
+		if(Parse.User.current().get('userBookmarks')){
+			Parse.User.current().get('userBookmarks').push(articleId)
+			
+		}
+
+		else{
+			Parse.User.current().set('userBookmarks',[])
+			Parse.User.current().get('userBookmarks').push(articleId)	
+		}
+
+		Parse.User.current().save(null, {
+  			success: function(){
+  				console.log('saved!')
+  			},
+ 			error: function(){
+ 				console.log('not saved')
+  			}
+		})
+
 	},
 		
 	render: function(){
@@ -466,7 +501,7 @@ var SingleArticleView = React.createClass({
 				<img id='articleHeaderImage' src={this.props.article.postImage.url}></img>
 				<p id='articleText' onClick={this._getWikiLink} dangerouslySetInnerHTML={{__html: this._scanNRE(originalArticle)}} >
 				</p>
-				<div id='bookmarkDiv'>
+				<div id='bookmarkDiv' onClick={this._addBookmark}>
 					<p>+ Bookmark</p>
 				</div>
 				<div id='articleFooter'>
@@ -482,7 +517,7 @@ var SingleArticleView = React.createClass({
 var Test = React.createClass({
 
 	_scrubWikiLink: function(input){
-		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+		var cleanInput = input.replace(/[.,-\/#!$%\^&\*;:{}=\-_~()]/g,"")
 		var cleanInput = cleanInput.replace('?', "")
 		var cleanInput = cleanInput.replace(" ","%20")
 		return cleanInput
