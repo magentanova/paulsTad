@@ -230,6 +230,7 @@ var NavView = React.createClass({
 		$('#featuredArticles').css('-webkit-filter','blur(3px)')
 		$('#articleBox').css('-webkit-filter','blur(3px)')
 		$('#wikiArticleText').css('-webkit-filter','blur(3px)')
+		$('#containerE').css('height','400px')
 
 		var currentUserId = Parse.User.current().id
 
@@ -237,10 +238,35 @@ var NavView = React.createClass({
 		console.log('new fav array')
 		console.log(favArray)
 
+		var favObjArray = []
 		
-      	
-   		ReactDOM.render(<BookmarkPreview  />,document.querySelector('#containerE'))
-
+		var fc = new PostCollection
+		fc.fetch({
+			headers: fc.parseHeaders
+		}).done(function(results){
+			console.log(results)
+			var resultsArray = results.results
+			favArray.forEach(function(articleId){
+				resultsArray.forEach(function(articleObj){
+					if (articleId === articleObj.objectId){
+						console.log('I found a match!')
+						var matchTitle = articleObj.postTitle
+						var matchImageUrl = articleObj.postImage.url
+						var matchId = articleObj.objectId
+						console.log(matchTitle, matchImageUrl)
+						var favObj = {
+							matchTitle: matchTitle,
+							matchImageUrl: matchImageUrl,
+							matchId: matchId
+						}
+						favObjArray.push(favObj)
+					}					
+				})
+			})
+			console.log('TEST')
+			console.log(favObjArray)
+			ReactDOM.render(<BookmarkPreview favArticles={favObjArray}  />,document.querySelector('#containerE'))
+		})
 		
 	},
 
@@ -268,13 +294,43 @@ var BookmarkPreview = React.createClass({
 		$('#featuredArticles').css('-webkit-filter','blur(0px)')
 		$('#articleBox').css('-webkit-filter','blur(0px)')
 		$('#wikiArticleText').css('-webkit-filter','blur(0px)')	
+		$('#containerE').css('height','0px')
+
 		ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))
 	},
 
+	_goSingleArticleView: function(event){
+		var articleClicked = event.target
+
+	},
+
+	_renderFavorites: function(articleObj){
+		var matchImageUrl = articleObj.matchImageUrl
+		var matchTitle = articleObj.matchTitle
+		var matchId = articleObj.matchId
+
+		return(
+			<div id='previewBlock'>
+				<img onClick={function(){location.hash='article/'+matchId; ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))}} src = {matchImageUrl} />
+				<p onClick={function(){location.hash='article/'+matchId; ReactDOM.unmountComponentAtNode(document.querySelector('#containerE'))}} id='previewTitle'>{matchTitle}</p>				
+			</div>
+			)
+	},
+
 	render: function(){
+		console.log('here is bookmark preview')
+		console.log(this)
+
+		var favoritedObjArray = this.props.favArticles
+	
 		return(
 			<div id='bookmarkPreview' className='animated fadeIn' onMouseLeave={this._closeBookmarkPreview}>
-				<p id='bookmarksTitle'>My<br></br>Bookmarks</p>
+				<p id='bookmarksTitle'>My Bookmarks</p>
+				<div id='previewOuterBox'>
+					<div id='bookmarkedItems'>
+						{favoritedObjArray.map(this._renderFavorites)}
+					</div>
+				</div>
 			</div>
 			)
 	}
@@ -291,8 +347,13 @@ var HomeView = React.createClass({
 			<div id='homeArticleBox'>
 				<img data-id={articleObject.attributes.objectId} id='homeArticleImage' src={articleObject.attributes.postImage.url} onClick={this._singleArticleClick}/>
 				<p data-id={articleObject.attributes.objectId} id='homeArticleTitle' onClick={this._singleArticleClick}>{articleObject.attributes.postTitle}</p>
-				<p id='homeArticleAuthor'>By AUTHOR</p>
-				<p className='timeago' id='homeArticleDate'>Posted {relativeTime(articleObject.attributes.createdAt)} </p>
+				<div id='homeLeftDiv'>
+					<p id='homeArticleAuthor'>By AUTHOR</p>
+					<p className='timeago' id='homeArticleDate'>Posted {relativeTime(articleObject.attributes.createdAt)} </p>
+				</div>
+				<div id='homeRightDiv'>
+					<i id='homeBookmarkButton' class="material-icons">bookmark_border</i>
+				</div>
 
 			</div>
 			)
