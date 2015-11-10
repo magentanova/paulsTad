@@ -274,12 +274,12 @@ var NavView = React.createClass({
 
 		return(
 			<div id='navBar'>
+				<img id='logo' onClick={this._goHome} src='./images/logo5.png' />
 				<p id='articleFeed' onClick={this._goHome}>Article Feed</p>
 				<p id='bookmarks' onMouseOver={this._goBookmarkPreview}onClick={this._goBookmarks}>Bookmarks</p>
 				<p id='post' onClick={this._goPost}>Post</p>
 				<p id='logout' onClick={this._goLogout}>Logout</p>
-				<i id='searchIcon' className="pe-7s-search"></i>			
-				<i className="pe-7s-menu"></i>
+				<img id='searchPng' src='./images/search.png' />			
 			</div>
 			)
 	}
@@ -342,6 +342,38 @@ var BookmarkPreview = React.createClass({
 
 var HomeView = React.createClass({
 
+	_addBookmark: function(event){
+
+				
+		var articleClicked = event.target		
+		
+		var articleId = articleClicked.dataset.id
+		var articleIdArray = '['+articleId+']'
+		// var articleString = '['+articleId+']'
+		var currentUserId = Parse.User.current().id
+		console.log(articleId)
+
+		if(Parse.User.current().get('userBookmarks')){
+			Parse.User.current().get('userBookmarks').push(articleId)
+			
+		}
+
+		else{
+			Parse.User.current().set('userBookmarks',[])
+			Parse.User.current().get('userBookmarks').push(articleId)	
+		}
+
+		Parse.User.current().save(null, {
+  			success: function(){
+  				console.log('saved!')
+  			},
+ 			error: function(){
+ 				console.log('not saved')
+  			}
+		})
+
+	},
+
 	_displayArticles: function(articleObject){
 		return (
 			<div id='homeArticleBox'>
@@ -352,7 +384,7 @@ var HomeView = React.createClass({
 					<p className='timeago' id='homeArticleDate'>Posted {relativeTime(articleObject.attributes.createdAt)} </p>
 				</div>
 				<div id='homeRightDiv'>
-					<i id='homeBookmarkButton' className="material-icons">bookmark_border</i>
+					<i data-id={articleObject.attributes.objectId} onClick={this._addBookmark} id='homeBookmarkButton' className="material-icons">bookmark_border</i>
 				</div>
 
 			</div>
@@ -368,17 +400,24 @@ var HomeView = React.createClass({
 		// now add routing so that this hash directs to single article view (adaptation of test)
 	},
 
+
+
 	render: function(){
 		console.log('heres HomeView')
 		console.log(this)
+
+		
 
 		var articleArray = this.props.currentArticles.models
 
 		return(
 			<div>
 				<div id='featuredArticles'>
-					<p>Featured<br />Articles</p>
-					<p id='goHere'>Will go here</p>
+					<div id='featuredBanner'>
+						<img src='./images/paris.png' id='paris' />
+						<img id='kansas' src='./images/kansas.jpg' />
+					</div>
+
 				</div>
 				<div id='currentArticles'>
 				{articleArray.map(this._displayArticles)} 
@@ -665,7 +704,7 @@ var WikiText = React.createClass({
 			<div id='wikiArticleText' className='animated fadeIn'>
 				<div id='wikiBoxHeader'>
 					<div id='closeX' >
-						<img id='blueX' src='./images/blueX.png' onClick={this._closeWikiBox}></img>
+						<img id='blueX' src='./images/blueX6.png' onClick={this._closeWikiBox}></img>
 						<p id='wikiIcon'>Wikipedia</p>
 						<p id='gettyIcon' onClick={function(){location.hash='images/'+wikiSearchTerm}}>Images</p>
 					</div>

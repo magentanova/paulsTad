@@ -78,6 +78,7 @@ $myOtherOtherMain: #F8F7F3;
 $myGray: #c8c9cb; 
 $newGray: #d9d9d9;
 $myGold: #FFE200;
+$myGreen: #CEE4BE;
 
 *{
     margin: 0;
@@ -225,6 +226,8 @@ html{
     text-align: center;
     float: right;
     margin-right: 70px;
+    vertical-align: top;
+    margin-top: 6px;
 
     i{
     font-size: 24px;
@@ -239,55 +242,69 @@ html{
 #articleFeed{
     display: inline;
     margin-right: 20px;
+    vertical-align: top;
+
 }
 
 #articleFeed:hover{
     cursor: pointer;
+    text-decoration: underline;
+
 }
 
 #bookmarks{
     display: inline;
     margin-right: 20px;
+    vertical-align: top;
 }
 
-#test{
-    display: inline;
-    margin-right: 20px;
-}
-
-#test:hover{
-    cursor: pointer;
-}
 
 #post{
     display: inline;
     margin-right: 20px;
+    vertical-align: top;
+
 }
 
 #post:hover{
     cursor: pointer;
+    text-decoration: underline;
 }
 
-#menuIcon{
-    display: inline;
-    margin-right: 20px;
-}
-
-#searchIcon:hover{
-
-}
 
 #logout{
     display: inline;
     margin-right: 20px;
+    vertical-align: top;
+
+
 }
 
 #logout:hover{
     cursor: pointer;
+    text-decoration: underline;
+
 }
 
 #bookmarks:hover{
     cursor: pointer;
+    text-decoration: underline;
+
+}
+
+#logo{
+    height: 66px;
+    position: fixed;
+    left: 50px;
+    top: 0;
+}
+
+#logo:hover{
+    cursor: pointer;
+}
+
+#searchPng{
+    height: 22px; 
 }
 
 //-------HOME VIEW------------------------
@@ -297,12 +314,24 @@ html{
     height: 400px;
     background-color: #F3F0E6;
     margin: auto;
-    margin-bottom: 45px;
+    margin-bottom: 100px;
     padding: 32px;
     color: #727272;
     font-size: 80px;
     line-height: 72px;
     margin-top: 10px;
+
+    #paris{
+        width: 285px;
+        margin-right: 10%;
+        margin-left: 15%;
+        display: inline-block;
+    }
+
+    #kansas{
+        display: inline;
+        max-height: 319px;
+    }
 
     p{
         margin-left: 30px;
@@ -338,6 +367,7 @@ html{
     padding-top: 5px;
     padding-bottom: 6px;
     line-height: 20px;
+    margin-bottom: 15px;
 }
 
 #homeArticleTitle:hover{
@@ -603,6 +633,10 @@ nreWord{
         margin-left: 15px;
         color: #C8C9CB;
     }
+}
+
+#blueX{
+    height: 17px;
 }
 
 #blueX:hover{
