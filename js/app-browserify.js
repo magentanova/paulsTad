@@ -456,7 +456,7 @@ var PostForm = React.createClass({
 
 		PostHeaderImage.save().then(function(){
 
-			alert('saved!')
+			console.log('saved!')
 
 		var NewPost = Parse.Object.extend({
 			className: 'NewPost'
@@ -471,7 +471,7 @@ var PostForm = React.createClass({
 
 		})}).then(
 			function(){
-				alert('Published!')
+				location.hash='home'
 			}
 		)
 	},
@@ -505,10 +505,13 @@ var PostForm = React.createClass({
 
 				<div id='postForm'>
 
-					<textarea rows='2' id='postTitle' placeholder='Title' ref='postTitle'></textarea>
-					<textarea rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>	
-					<input type='file' id='postImage' placeholder='Add article image' ref='postImage'></input>
-					<button id='postSubmit' onClick={this._submitPostClick}>PUBLISH</button>
+					<textarea className="animated fadeIn" rows='2' id='postTitle' placeholder='Title' ref='postTitle'></textarea>
+					<textarea className="animated fadeIn" style={{'animation-delay':'0.25s'}} rows = '10' id='postArticle' placeholder='Write here...' ref='postArticle'></textarea>
+					<div id='imageUpload' className="animated fadeIn" style={{'animation-delay':'0.5s'}}>	
+						<p id='uploadLabel'>Article image</p>
+						<input type='file' id='postImage' placeholder='Article image' ref='postImage'></input>
+					</div>
+					<button className="animated fadeIn" style={{'animation-delay':'0.75s'}} id='postSubmit' onClick={this._submitPostClick}>PUBLISH</button>
 
 				</div>
 				

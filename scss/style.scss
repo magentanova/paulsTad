@@ -407,7 +407,7 @@ html{
 }
 
 #homeBookmarkButton{
-    color: #C8C9CB;
+    color: #F0F0F0;
     padding: 3px;
     border: 1px solid white;
     border-radius: 8px;
@@ -415,6 +415,7 @@ html{
 
 #homeBookmarkButton:hover{
     cursor: pointer;
+    color: #C8C9CB;
     border: 1px solid #C8C9CB;
     border-radius: 8px;
     padding: 3px;
@@ -424,7 +425,7 @@ html{
 
 #postForm{
     margin-left: 350px;
-    margin-top: 100px;
+    margin-top: 25px;
     max-width: 700px;
 
 }
@@ -459,7 +460,21 @@ html{
 }
 
 #postImage{
-    background-color: white;
+    border: 1px solid #c8c9cb;
+    padding: 8px;
+    height: 40px;
+    padding-left: 13px;
+    width: 100%;
+}
+
+#uploadLabel{
+    color: #444;
+    display: block;
+    float: left;
+    margin-bottom: 2px;
+    font-family: 'Helvetica',sans-serif;
+    font-weight: lighter;
+    width: 20%;
 }
 
 
@@ -469,19 +484,30 @@ html{
 }
 
 #postSubmit{
-    float: right;
-    background: #F9F6F6;
+    margin-left: 35%;
+    background: #EDEDED;
     border: 0;
     width: 230px;
     height: 40px;
-    font-family: 'Helvetica';
+    font-family: Helvetica;
     letter-spacing: 3px;
     font-size: 15px;
     font-weight: 300;
+    margin-top: 28px;
 }
 
 #postSubmit:hover{
-    background: #EDEDED;
+    background: #f9f6f6;
+}
+
+#postSubmit:active{
+    outline: 0;
+    border: 0;
+}
+
+#postSubmit:focus{
+    outline: 0;
+    border: 0;
 }
 
 #addFootnoteButton{
