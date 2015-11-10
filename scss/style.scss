@@ -367,6 +367,29 @@ html{
     cursor: default;
 }
 
+#homeLeftDiv{
+    display: inline-block;
+}
+
+#homeRightDiv{
+    float: right;
+    display: inline;
+}
+
+#homeBookmarkButton{
+    color: #C8C9CB;
+    padding: 3px;
+    border: 1px solid white;
+    border-radius: 8px;
+}
+
+#homeBookmarkButton:hover{
+    cursor: pointer;
+    border: 1px solid #C8C9CB;
+    border-radius: 8px;
+    padding: 3px;
+}
+
 //-------POST VIEW------------------------
 
 #postForm{

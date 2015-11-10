@@ -352,7 +352,7 @@ var HomeView = React.createClass({
 					<p className='timeago' id='homeArticleDate'>Posted {relativeTime(articleObject.attributes.createdAt)} </p>
 				</div>
 				<div id='homeRightDiv'>
-					<i id='homeBookmarkButton' class="material-icons">bookmark_border</i>
+					<i id='homeBookmarkButton' className="material-icons">bookmark_border</i>
 				</div>
 
 			</div>
