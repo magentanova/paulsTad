@@ -771,7 +771,7 @@ var GettyWindow = React.createClass({
 			<div id='wikiArticleText' className='animated fadeIn'>
 				<div id='wikiBoxHeader'>
 					<div id='closeX' >
-						<img id='blueX' src='./images/blueX.png' onClick={this._closeWikiBox}></img>
+						<img id='blueX' src='./images/blueX6.png' onClick={this._closeWikiBox}></img>
 						<p id='wikiIcon' style={{color:'#C8C9CB'}} onClick={function(){location.hash='wiki/'+wikiSearchTerm}}>Wikipedia</p>
 						<p id='gettyIcon' style={{color:'black'}} >Images</p>
 					</div>
