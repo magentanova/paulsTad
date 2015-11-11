@@ -344,7 +344,8 @@ var HomeView = React.createClass({
 
 	_addBookmark: function(event){
 
-				
+		event.target.style.color = '#444'		
+					
 		var articleClicked = event.target		
 		
 		var articleId = articleClicked.dataset.id
@@ -373,6 +374,7 @@ var HomeView = React.createClass({
 		})
 
 	},
+
 
 	_displayArticles: function(articleObject){
 		return (
@@ -420,7 +422,7 @@ var HomeView = React.createClass({
 
 				</div>
 				<div id='currentArticles'>
-				{articleArray.map(this._displayArticles)} 
+				{articleArray.map(this._displayArticles).reverse()} 
 				</div>
 			</div>
 			)
@@ -937,7 +939,13 @@ var WikiRouter = Backbone.Router.extend({
 			dataType: 'json',
 			processData: true
 		}).then(function(results){
+			console.log('here we go...')
 			console.log(results)
+
+			if(results.query.pages['-1']){
+				console.log('YUP')
+			}
+
 			ReactDOM.unmountComponentAtNode(document.querySelector('#containerC'))
 			ReactDOM.render(<WikiText wikiText={self.wm} />, document.querySelector('#containerC'))
 		})
