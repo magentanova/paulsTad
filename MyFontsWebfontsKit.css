@@ -1,0 +1,34 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3124065, 2015-11-11T21:31:38-0500
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: Caslon540BT-Roman by Bitstream
+ * URL: http://www.myfonts.com/fonts/bitstream/caslon-540/540/
+ * 
+ * Webfont: Caslon540BT-Italic by Bitstream
+ * URL: http://www.myfonts.com/fonts/bitstream/caslon-540/540-italic/
+ * 
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=3124065
+ * Licensed pageviews: 10,000
+ * Webfonts copyright: Copyright 1990-2003 Bitstream Inc. All rights reserved.
+ * 
+ * © 2015 MyFonts Inc
+*/
+
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/2fab61");
+
+  
+@font-face {font-family: 'Caslon540BT-Roman';src: url('webfonts/2FAB61_0_0.eot');src: url('webfonts/2FAB61_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2FAB61_0_0.woff2') format('woff2'),url('webfonts/2FAB61_0_0.woff') format('woff'),url('webfonts/2FAB61_0_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Caslon540BT-Italic';src: url('webfonts/2FAB61_1_0.eot');src: url('webfonts/2FAB61_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2FAB61_1_0.woff2') format('woff2'),url('webfonts/2FAB61_1_0.woff') format('woff'),url('webfonts/2FAB61_1_0.ttf') format('truetype');}
+ 
