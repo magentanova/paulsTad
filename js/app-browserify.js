@@ -820,7 +820,8 @@ var WikiRouter = Backbone.Router.extend({
 		'test': 'goTestView',
 		'wiki/:cleanNreText': 'goWikiView',
 		'article/:articleObjectId': 'goSingleArticleView',
-		'images/:gettySearchTerm': 'goImageView'
+		'images/:gettySearchTerm': 'goImageView',
+		'*anything': 'goHomeView'
 	},
 
 //--Login page:----------------------------
