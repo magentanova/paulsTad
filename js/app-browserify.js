@@ -7,12 +7,15 @@ var $ = require('jquery'),
 	Backbone = require('backbone'),
 	React = require('react'),
 	Parse = require('parse'),
-	ReactDOM = require('react-dom')
+	ReactDOM = require('react-dom'),
+	nlp = require('nlp_compromise')
 
 var P = window.Parse
 
 console.log('hello')
 
+console.log(nlp)
+window.nlp = nlp
 
 // RELATIVE TIME
 
@@ -160,6 +163,14 @@ var WikiCollection = Backbone.Collection.extend({
 // ===== VIEW: Signup/Login ====
 
 var LoginView = React.createClass({
+
+	componentWillMount: function() {
+		document.querySelector('html').background = "url(images/shore.jpg) no-repeat center center fixed"
+	},
+
+	componentWillUnmount: function() {
+		document.querySelector('html').background = "none"		
+	},
 
 	render: function(){
 		return(
@@ -546,18 +557,20 @@ var SingleArticleView = React.createClass({
 
 	_scanNRE: function(input){
 		var newText = input
-		var spotObjArray = nlp.spot(newText)
+		var spotObjArray = nlp.text(newText).topics()
 		var spotTextArray = spotObjArray.map(function(el){
 			return el.text
 		})
 
+		console.log(spotTextArray)
+
 		spotTextArray.forEach(function(el){
-			var re = new RegExp(el,'g')
-			newText = newText.replace(re,"<a id='nreWord'>" + el + "</a>")			
+			var re = new RegExp(el,'gi')
+			newText = newText.replace(re,'<a id="nreWord">' + el + '</a>')			
 			// above, used id for 'nreWord' instead of class because the is() selector in _getWikiLink is picky and doesn't like use of className
 		})
+		console.log(newText)
 		return newText
-	
 	},
 
 	_addBookmark: function(){
@@ -641,7 +654,7 @@ var Test = React.createClass({
 
 	_scanNRE: function(input){
 		var newText = input
-		var spotObjArray = nlp.spot(newText)
+		var spotObjArray = nlp.text(newText).topics()
 		var spotTextArray = spotObjArray.map(function(el){
 			return el.text
 		})
@@ -977,16 +990,18 @@ var WikiRouter = Backbone.Router.extend({
 //--Initialize---------------------------------
 	
 	initialize: function(){
+		window.P = Parse
 		var self = this
 		this.pc = new PostCollection()
 		this.pm = new PostModel()
 		this.wm = new WikiModel()
 		this.wc = new WikiCollection()
 		this.gm = new GettyModel()
-		location.hash = 'login'
+		if (!Parse.User.current()) {
+			location.hash = 'login'
+		}
 		Backbone.history.start()
 //-----------------------------------
-
 	}
 
 })

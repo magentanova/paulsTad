@@ -1,6 +1,6 @@
 
 @import "../bower_components/normalize-css/normalize.scss";
-@import "../bower_components/typeplate-starter-kit/scss/typeplate";
+@import "../bower_components/typeplate-starter-kit/css/typeplate.scss";
 
 /**
  * BOX-SIZING
@@ -32,33 +32,33 @@
     }
 }
 
-@mixin grid_r($col, $width) {
-    @media only screen and (min-width: #{$width}px) {
-        .grid-#{$col}-#{$width} {
-            & > * {
-                flex-basis: #{100/$col}%;
-            }
-        }
-    }
-}
+// @mixin grid_r($col, $width) {
+//     @media only screen and (min-width: #{$width}px) {
+//         .grid-#{$col}-#{$width} {
+//             & > * {
+//                 flex-basis: #{100/$col}%;
+//             }
+//         }
+//     }
+// }
 
-@mixin grid($col) {
-    .grid-#{$col} {
-        & > * {
-            flex-basis: #{100/$col}%;
-        }
-    }
-}
+// @mixin grid($col) {
+//     .grid-#{$col} {
+//         & > * {
+//             flex-basis: #{100/$col}%;
+//         }
+//     }
+// }
 
-@include grid(2);
-@include grid(4);
-@include grid(5);
+// @include grid(2);
+// @include grid(4);
+// @include grid(5);
 
-@include grid_r(2,400);
-@include grid_r(2,800);
+// @include grid_r(2,400);
+// @include grid_r(2,800);
 
-@include grid_r(4,400);
-@include grid_r(4,800);
+// @include grid_r(4,400);
+// @include grid_r(4,800);
 
 /**
  * GENERAL
@@ -93,7 +93,6 @@ body{
 
 
 html{
-    background: url(images/shore.jpg) no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
