@@ -163,7 +163,7 @@ var WikiCollection = Backbone.Collection.extend({
 var LoginView = React.createClass({
 
 	componentWillMount: function() {
-		document.querySelector('html').style.background = "url(images/shore.jpg) no-repeat center center fixed"
+		document.querySelector('html').style.background = "url(images/Shore.jpg) no-repeat center center fixed"
 	},
 
 	componentWillUnmount: function() {
