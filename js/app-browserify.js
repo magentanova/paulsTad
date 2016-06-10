@@ -566,7 +566,7 @@ var SingleArticleView = React.createClass({
 
 		spotTextArray.forEach(function(el){
 			var re = new RegExp(el,'gi')
-			newText = newText.replace(re,'<a id="nreWord">' + el + '</a>')			
+			newText = newText.replace(re,'<a id="nreWord">$&</a>')			
 			// above, used id for 'nreWord' instead of class because the is() selector in _getWikiLink is picky and doesn't like use of className
 		})
 		console.log(newText)
@@ -660,7 +660,7 @@ var Test = React.createClass({
 		})
 
 		spotTextArray.forEach(function(el){
-			var re = new RegExp(el,'g')
+			var re = new RegExp(el,'gi')
 			newText = newText.replace(re,"<a id='nreWord'>" + el + "</a>")			
 			// above, used id for 'nreWord' instead of class because the is() selector in _getWikiLink is picky and doesn't like use of className
 		})
@@ -742,24 +742,24 @@ var GettyWindow = React.createClass({
 	},
 
 	_displayImages: function(element){
-		var returnValue = '<img src=' + element.display_sizes[0].uri + '/>'
-		var gettyLink = element.referral_destinations[0].uri
-		console.log(returnValue)
+		// var returnValue = '<img src=' + element.display_sizes[0].uri + '/>'
+		// var gettyLink = element.referral_destinations[0].uri
+		console.log(element.image.contextLink, element.link)
 		return (
 			<div id='gettyResult'>
-				<a href={gettyLink} target="_blank"><img id='gettyImageSingle' src={element.display_sizes[0].uri} /></a>
+				<a href={element.image.contextLink} target="_blank"><img id='gettyImageSingle' src={element.link} /></a>
 			</div>
 			)						
 		
 	},
 
 	_displayGoogleImages: function(element){
-		var returnValue = '<img src=' + element.unescapedUrl + '/>'
-		return(
+		console.log(element.image.contextLink, element.link)
+		return (
 			<div id='gettyResult'>
-				<a href={element.originalContextUrl}><img id='gettyImageSingle' src={element.unescapedUrl} /></a>
+				<a href={element.image.contextLink} target="_blank"><img id='gettyImageSingle' src={element.link} /></a>
 			</div>
-			)
+			)						
 	},
 
 	render: function(){
@@ -978,14 +978,18 @@ var WikiRouter = Backbone.Router.extend({
 			// },
 			// dataType: 'json',
 			// processData: true
-			url: 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + gettySearchTerm,
-			dataType: 'jsonp',
+			url: 'https://www.googleapis.com/customsearch/v1',
+			data: {
+				key: "AIzaSyDr6T8gkhLh6ZhsEX9MjtW9fMYk5ehPaKw",
+				cx: "008940921588152958013:h64uer7a344",
+				q: gettySearchTerm,
+				searchType: "image"
+				},
 			processData: true
-		}).then(function(results){
-			console.log(results)
-			ReactDOM.render(<GettyWindow imageArray={results.responseData.results} />, document.querySelector('#containerC'))
-
-		})
+			}).then(function(results){
+				console.log(results)
+				ReactDOM.render(<GettyWindow imageArray={results.items} />, document.querySelector('#containerC'))
+			})
 	},
 
 //--Initialize---------------------------------
