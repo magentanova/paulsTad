@@ -65,8 +65,6 @@ var unmountContainerE = function(){
 // ==================================================
 // ==================================================
 
-window.P = Parse
-
 var APP_ID = 'SU8TpFl5xTFmygyvC7Bg9kSLwqy3VYDdtblWDorM',
 	JS_KEY = 'xVvq73JOE4npLNA7tmMr4wV5ZFTogWHVTPEmQfBi',
 	REST_API_KEY = 'YE9BAeO9eiJl625VSgQskaTUPanzN2g5smxkxtht'
@@ -165,11 +163,11 @@ var WikiCollection = Backbone.Collection.extend({
 var LoginView = React.createClass({
 
 	componentWillMount: function() {
-		document.querySelector('html').background = "url(images/shore.jpg) no-repeat center center fixed"
+		document.querySelector('html').style.background = "url(images/shore.jpg) no-repeat center center fixed"
 	},
 
 	componentWillUnmount: function() {
-		document.querySelector('html').background = "none"		
+		document.querySelector('html').style.background = "none"		
 	},
 
 	render: function(){
